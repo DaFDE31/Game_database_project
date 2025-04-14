@@ -5,6 +5,8 @@ from sqlalchemy.orm import relationship
 Base = declarative_base()
 
 
+Company, Platform, GameStudio, Game, GameGenre, PlayedOn, Review, Achievements, OnlineService, UserAccount, Plays, DLC, Downloaded
+
 class Company(Base):
     __tablename__ = 'company'
     CompID = Column(Integer, primary_key=True)
