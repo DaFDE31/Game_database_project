@@ -1,5 +1,5 @@
 from app import db
-from app.models import Company, Platform, GameStudio, Game
+from app.models import Company, Platform, GameStudio, Game, GameGenre, PlayedOn, Review, Achievements, OnlineService, UserAccount, Plays, DLC, Downloaded
 from datetime import date
 
 # Create Companies
@@ -56,7 +56,18 @@ ps4 = Platform(
     CompanyID= sony.CompID,
     ReleaseDate = "2013-11-15",
 )
-platform_list = [ps5, xbox_series_x, switch, switch2, ps4]
+
+steam_player = Platform(
+    Name = "Steam/PC",
+    Generation = 9,
+    Price = 0,
+    Sales = 0,
+    CompanyID= steam.CompID,
+    ReleaseDate = "2003-09-12",
+)
+
+platform_list = [ps5, xbox_series_x, switch, switch2, ps4, steam_player]
+
 db.session.add_all(platform_list)
 db.session.commit()
 
@@ -91,6 +102,7 @@ gow_ragnarok = Game(
     Rating=9,
     StudioID=santa_monica.StudioID
 )
+
 botw = Game(
     Name='The Legend of Zelda: Breath of the Wild',
     Price=59.99,
@@ -234,6 +246,47 @@ games_list = [
     sonic_frontiers, fortnite, minecraft
 ]
 db.session.add_all(games_list)
+db.session.commit()
+
+played_on_records = []
+
+played_on_records += [PlayedOn(PlatID=platform.PlatID, GameID=gow_ragnarok.GameID) for platform in [ps4, ps5, steam_player]]
+
+played_on_records += [PlayedOn(PlatID=platform.PlatID, GameID=botw.GameID) for platform in [switch, switch2]]
+
+played_on_records += [PlayedOn(PlatID=platform.PlatID, GameID=totk.GameID) for platform in [switch, switch2]]
+
+played_on_records += [PlayedOn(PlatID=platform.PlatID, GameID=tekken8.GameID) for platform in [ps5, steam_player, xbox_series_x]]
+
+played_on_records += [PlayedOn(PlatID=platform.PlatID, GameID=dbsk.GameID) for platform in [ps5, steam_player, xbox_series_x]]
+
+played_on_records += [PlayedOn(PlatID=platform.PlatID, GameID=tlou_part1.GameID) for platform in [ps5, steam_player]]
+
+played_on_records.append(PlayedOn(PlatID=switch.PlatID, GameID=mario_odyssey.GameID))
+
+played_on_records.append(PlayedOn(PlatID=switch.PlatID, GameID=mario_kart8.GameID))
+
+played_on_records += [PlayedOn(PlatID=platform.PlatID, GameID=undertale.GameID) for platform in [ps4, ps5, steam_player, switch, xbox_series_x]]
+
+played_on_records.append(PlayedOn(PlatID=steam_player.PlatID, GameID=bloons_td6.GameID))
+
+played_on_records += [PlayedOn(PlatID=platform.PlatID, GameID=brawlhalla.GameID) for platform in [ps4, steam_player, switch, xbox_series_x]]
+
+played_on_records.append(PlayedOn(PlatID=switch.PlatID, GameID=smash_ultimate.GameID))
+
+played_on_records.append(PlayedOn(PlatID=xbox_series_x.PlatID, GameID=halo.GameID))
+
+played_on_records += [PlayedOn(PlatID=platform.PlatID, GameID=spiderman2.GameID) for platform in [ps5, steam_player]]
+
+played_on_records += [PlayedOn(PlatID=platform.PlatID, GameID=persona5.GameID) for platform in [ps4, ps5, steam_player, switch, xbox_series_x]]
+
+played_on_records += [PlayedOn(PlatID=platform.PlatID, GameID=sonic_frontiers.GameID) for platform in [ps4, ps5, steam_player, switch, xbox_series_x]]
+
+played_on_records += [PlayedOn(PlatID=platform.PlatID, GameID=fortnite.GameID) for platform in [ps4, ps5, steam_player, switch, xbox_series_x]]
+
+played_on_records += [PlayedOn(PlatID=platform.PlatID, GameID=minecraft.GameID) for platform in [ps4, ps5, steam_player, switch, xbox_series_x]]
+
+db.session.add_all(played_on_records)
 db.session.commit()
 
 print("Database seeded successfully!")

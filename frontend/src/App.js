@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-// Sample data
+/*// Sample data
 const games = [
   { id: 1, title: 'God of War', platform: ['Playstation', "PC"] },
   { id: 2, title: 'Halo Infinite', platform: ['Xbox'] },
@@ -9,8 +9,25 @@ const games = [
   { id: 5, title: 'Cyberpunk 2077', platform: ["Playstation", "Xbox", 'PC'] },
   { id: 6, title: 'Spider-Man 2', platform: ['Playstation', "PC"] },
 ];
+*/
 
 function App() {
+  const [games, setGames] = useState([]);
+
+  useEffect(() => {
+    const fetchGames = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/games');
+        const data = await response.json();
+        setGames(data);
+      } catch (err) {
+        console.error('Error fetching games:', err);
+      }
+    };
+
+    fetchGames();
+  }, []);
+
   const [selectedPlatform, setSelectedPlatform] = useState('All');
 
   const handleFilter = (platform) => {
