@@ -1,0 +1,66 @@
+:root {
+    --playstation: #006FCD;
+    --xbox: #0e7a0d;
+    --nintendo: rgb(228, 0, 15);
+    --pc: purple;
+    --all: #ccc;
+
+}
+.platform-button {
+    padding: 10px 15px;
+    border: 2px solid var(--all);
+    border-radius: 8px;
+    margin-right: 10px;
+    cursor: pointer;
+    background-color: white;
+    transition: background-color 0.3s, border-color 0.3s;
+  }
+  
+  .platform-button:hover {
+    background-color: var(--all);
+  }
+  
+  /* Optional platform-specific colors */
+  .platform-button.playstation {
+    border-color: var(--playstation);
+    color: var(--playstation);
+  }
+  
+  .platform-button.playstation.selected {
+    border-color: var(--playstation);
+    color: white;
+    background-color: var(--playstation);
+  }
+
+  .platform-button.xbox {
+    border-color: var(--xbox);
+    color: var(--xbox);
+  }
+  
+  .platform-button.xbox.selected {
+    border-color: var(--xbox);
+    color: white;
+    background-color: var(--xbox);
+  }
+
+  .platform-button.nintendo {
+    border-color: var(--nintendo);
+    color: var(--nintendo);
+  }
+  
+  .platform-button.nintendo.selected {
+    border-color: var(--nintendo);
+    color: white;
+    background-color: var(--nintendo);
+  }
+
+  .platform-button.pc {
+    border-color: var(--pc);
+    color: var(--pc);
+  }
+  
+  .platform-button.pc.selected {
+    border-color: var(--pc);
+    color: white;
+    background-color: var(--pc);
+  }

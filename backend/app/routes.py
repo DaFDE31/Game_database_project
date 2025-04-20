@@ -1,10 +1,12 @@
-from flask import jsonify, request
+from flask import jsonify
+from flask_cors import cross_origin
 from . import db
-from .models import Company, Platform, GameStudio, Game, GameGenre, PlayedOn, Review, Achievements, OnlineService, UserAccount, Plays, DLC, Downloaded
+from .models import Game, Platform, PlayedOn
 from sqlalchemy.orm import joinedload
 
 def register_routes(app):
     @app.route('/api/games')
+    @cross_origin(origin='http://localhost:3000')  # explicitly allow this origin
     def get_games():
         games = Game.query.options(joinedload(Game.studio)).all()
 
@@ -17,12 +19,9 @@ def register_routes(app):
                 'id': game.GameID,
                 'name': game.Name,
                 'price': game.Price,
-                'releaseDate': game.ReleaseDate.isoformat(),  # converts to 'YYYY-MM-DD'
+                'releaseDate': game.ReleaseDate.isoformat(),
                 'rating': game.Rating,
                 'studio': game.studio.Name if game.studio else 'Unknown',
                 'platforms': platform_names
             })
-        print(results)
-        response = jsonify(results)
-        response.headers.add('Access-Control-Allow-Origin', 'http://localhost:3000')
-        return response
+        return jsonify(results)

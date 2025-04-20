@@ -10,12 +10,8 @@ def create_app():
     app.config.from_object(Config)
 
     CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}})
+    
     db.init_app(app)
-
-    @app.after_request
-    def add_cors_headers(response):
-        response.headers.add('Access-Control-Allow-Origin', 'http://localhost:3000')
-        return response
 
     with app.app_context():
         from . import models
