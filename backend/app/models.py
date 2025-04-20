@@ -1,129 +1,124 @@
-from sqlalchemy import Column, Integer, String, Float, Date, ForeignKey, Table
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship
-
-Base = declarative_base()
+from . import db
 
 
-
-class Company(Base):
+class Company(db.Model):
     __tablename__ = 'company'
-    CompID = Column(Integer, primary_key=True)
-    Name = Column(String)
+    CompID = db.Column(db.Integer, primary_key=True)
+    Name = db.Column(db.String(255))
 
 
-class Platform(Base):
+class Platform(db.Model):
     __tablename__ = 'platform'
-    PlatID = Column(Integer, primary_key=True)
-    Name = Column(String)
-    Generation = Column(Integer)
-    Price = Column(Float)
-    Sales = Column(Integer)
-    CompanyID = Column(Integer, ForeignKey('company.CompID'))
-    ReleaseDate = Column(Date)
+    PlatID = db.Column(db.Integer, primary_key=True)
+    Name = db.Column(db.String(255))
+    Generation = db.Column(db.Integer)
+    Price = db.Column(db.Float)
+    Sales = db.Column(db.Integer)
+    CompanyID = db.Column(db.Integer, db.ForeignKey('company.CompID'))
+    ReleaseDate = db.Column(db.Date)
 
-    company = relationship("Company")
+    company = db.relationship("Company")
 
 
-class GameStudio(Base):
+class GameStudio(db.Model):
     __tablename__ = 'gamestudio'
-    StudioID = Column(Integer, primary_key=True)
-    Name = Column(String)
-    Location = Column(String)
+    StudioID = db.Column(db.Integer, primary_key=True)
+    Name = db.Column(db.String(255))
+    Location = db.Column(db.String(255))
 
 
-class Game(Base):
+class Game(db.Model):
     __tablename__ = 'game'
-    GameID = Column(Integer, primary_key=True)
-    Name = Column(String)
-    Price = Column(Float)
-    ReleaseDate = Column(Date)
-    Rating = Column(Integer)
-    StudioID = Column(Integer, ForeignKey('gamestudio.StudioID'))
+    GameID = db.Column(db.Integer, primary_key=True)
+    Name = db.Column(db.String(255))
+    Price = db.Column(db.Float)
+    ReleaseDate = db.Column(db.Date)
+    Rating = db.Column(db.Integer)
+    StudioID = db.Column(db.Integer, db.ForeignKey('gamestudio.StudioID'))
 
-    studio = relationship("GameStudio")
+    studio = db.relationship("GameStudio")
 
 
-class GameGenre(Base):
+class GameGenre(db.Model):
     __tablename__ = 'gamegenre'
-    GenreName = Column(String, primary_key=True)
-    GameID = Column(Integer, ForeignKey('game.GameID'), primary_key=True)
+    GenreName = db.Column(db.String(255), primary_key=True)
+    GameID = db.Column(db.Integer, db.ForeignKey('game.GameID'), primary_key=True)
 
 
-class PlayedOn(Base):
+class PlayedOn(db.Model):
     __tablename__ = 'playedon'
-    PlatID = Column(Integer, ForeignKey('platform.PlatID'), primary_key=True)
-    GameID = Column(Integer, ForeignKey('game.GameID'), primary_key=True)
+    PlatID = db.Column(db.Integer, db.ForeignKey('platform.PlatID'), primary_key=True)
+    GameID = db.Column(db.Integer, db.ForeignKey('game.GameID'), primary_key=True)
 
 
-class Review(Base):
+class Review(db.Model):
     __tablename__ = 'review'
-    ReviewID = Column(Integer, primary_key=True)
-    Author = Column(String)
-    Date = Column(Date)
-    Website = Column(String)
-    Rating = Column(Integer)
-    GameID = Column(Integer, ForeignKey('game.GameID'))
+    ReviewID = db.Column(db.Integer, primary_key=True)
+    Author = db.Column(db.String(255))
+    Date = db.Column(db.Date)
+    Website = db.Column(db.String(255))
+    Rating = db.Column(db.Integer)
+    GameID = db.Column(db.Integer, db.ForeignKey('game.GameID'))
 
-    game = relationship("Game")
+    game = db.relationship("Game")
 
 
-class Achievements(Base):
+class Achievements(db.Model):
     __tablename__ = 'achievements'
-    AchievementID = Column(Integer, primary_key=True)
-    Name = Column(String)
-    Rank = Column(String)
-    GameID = Column(Integer, ForeignKey('game.GameID'))
+    AchievementID = db.Column(db.Integer, primary_key=True)
+    Name = db.Column(db.String(255))
+    Rank = db.Column(db.String(255))
+    GameID = db.Column(db.Integer, db.ForeignKey('game.GameID'))
 
-    game = relationship("Game")
+    game = db.relationship("Game")
 
 
-class OnlineService(Base):
+class OnlineService(db.Model):
     __tablename__ = 'onlineservice'
-    ServiceID = Column(Integer, primary_key=True)
-    Name = Column(String)
-    CompanyID = Column(Integer, ForeignKey('company.CompID'))
-    Tier = Column(String)
-    MonthlyPrice = Column(Float)
-    YearlyPrice = Column(Float)
+    ServiceID = db.Column(db.Integer, primary_key=True)
+    Name = db.Column(db.String(255))
+    CompanyID = db.Column(db.Integer, db.ForeignKey('company.CompID'))
+    Tier = db.Column(db.String(255))
+    MonthlyPrice = db.Column(db.Float)
+    YearlyPrice = db.Column(db.Float)
 
-    company = relationship("Company")
+    company = db.relationship("Company")
 
 
-class UserAccount(Base):
+class UserAccount(db.Model):
     __tablename__ = 'useraccount'
-    UserName = Column(String, primary_key=True)
-    Password = Column(String)
-    FirstName = Column(String)
-    LastName = Column(String)
-    Region = Column(String)
-    OnlineServiceID = Column(Integer, ForeignKey('onlineservice.ServiceID'))
-    DoB = Column(Date)
+    UserName = db.Column(db.String(255), primary_key=True)
+    Password = db.Column(db.String(255))
+    FirstName = db.Column(db.String(255))
+    LastName = db.Column(db.String(255))
+    Region = db.Column(db.String(255))
+    OnlineServiceID = db.Column(db.Integer, db.ForeignKey('onlineservice.ServiceID'))
+    DoB = db.Column(db.Date)
 
-    service = relationship("OnlineService")
+    service = db.relationship("OnlineService")
 
 
-class Plays(Base):
+class Plays(db.Model):
     __tablename__ = 'plays'
-    GameID = Column(Integer, ForeignKey('game.GameID'), primary_key=True)
-    UserID = Column(String, ForeignKey('useraccount.UserName'), primary_key=True)
-    OnlineServiceID = Column(Integer, ForeignKey('onlineservice.ServiceID'))
-    Hours = Column(Float)
+    GameID = db.Column(db.Integer, db.ForeignKey('game.GameID'), primary_key=True)
+    UserID = db.Column(db.String(255), db.ForeignKey('useraccount.UserName'), primary_key=True)
+    OnlineServiceID = db.Column(db.Integer, db.ForeignKey('onlineservice.ServiceID'))
+    Hours = db.Column(db.Float)
 
 
-class DLC(Base):
+class DLC(db.Model):
     __tablename__ = 'dlc'
-    DLCID = Column(Integer, primary_key=True)
-    Name = Column(String)
-    GameID = Column(Integer, ForeignKey('game.GameID'))
-    ReleaseDate = Column(Date)
-    Description = Column(String)
-    Price = Column(Float)
+    DLCID = db.Column(db.Integer, primary_key=True)
+    Name = db.Column(db.String(255))
+    GameID = db.Column(db.Integer, db.ForeignKey('game.GameID'))
+    ReleaseDate = db.Column(db.Date)
+    Description = db.Column(db.String(255))
+    Price = db.Column(db.Float)
 
-    game = relationship("Game")
+    game = db.relationship("Game")
 
 
-class Downloaded(Base):
+class Downloaded(db.Model):
     __tablename__ = 'downloaded'
-    DLCID = Column(Integer, ForeignKey('dlc.DLCID'), primary_key=True)
-    UserName = Column(String, ForeignKey('useraccount.UserName'), primary_key=True)
+    DLCID = db.Column(db.Integer, db.ForeignKey('dlc.DLCID'), primary_key=True)
+    UserName = db.Column(db.String(255), db.ForeignKey('useraccount.UserName'), primary_key=True)

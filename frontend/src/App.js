@@ -18,6 +18,9 @@ function App() {
     const fetchGames = async () => {
       try {
         const response = await fetch('http://localhost:5000/api/games');
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
         const data = await response.json();
         setGames(data);
       } catch (err) {
@@ -34,7 +37,7 @@ function App() {
     setSelectedPlatform(platform);
   };
 
-  const filteredGames = selectedPlatform === 'All' ? games : games.filter((game) => game.platform.includes(selectedPlatform));
+  const filteredGames = selectedPlatform === 'All' ? games : games.filter((game) => game.platforms.includes(selectedPlatform));
 
   return (
     <div className="App" style={{ fontFamily: 'sans-serif', padding: '20px' }}>
@@ -49,7 +52,7 @@ function App() {
 
       <ul>
         {filteredGames.map((game) => (
-          <li key={game.id}>{game.title}</li>
+          <li key={game.id}>{game.name}</li>
         ))}
       </ul>
     </div>
