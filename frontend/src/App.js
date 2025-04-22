@@ -1,22 +1,61 @@
 import React, { useState, useEffect } from 'react';
 import PlatformButton from './components/PlatformButton';
+import GameCard from './components/GameCard';
+import "./components/GameCard.css"
 
 // Sample data
-/*const games = [
-  { id: 1, name: 'God of War', platforms: ['PlayStation', "Steam/PC"] },
-  { id: 2, name: 'Halo Infinite', platforms: ['Xbox'] },
-  { id: 3, name: 'The Legend of Zelda: Breath of the Wild', platforms: ['Nintendo'] },
-  { id: 4, name: 'Forza Horizon 5', platforms: ['Xbox'] },
-  { id: 5, name: 'Cyberpunk 2077', platforms: ["PlayStation", "Xbox", 'PC'] },
-  { id: 6, name: 'Spider-Man 2', platforms: ['Playstation', "PC"] },
-];*/
+const games = [
+  { 
+    id: 1, 
+    name: 'God of War', 
+    platforms: ['PlayStation', 'Steam/PC'], 
+    releaseDate: '2018-04-20', 
+    price: 39.99 
+  },
+  { 
+    id: 2, 
+    name: 'Halo Infinite', 
+    platforms: ['Xbox'], 
+    releaseDate: '2021-12-08', 
+    price: 59.99 
+  },
+  { 
+    id: 3, 
+    name: 'The Legend of Zelda: Breath of the Wild', 
+    platforms: ['Nintendo'], 
+    releaseDate: '2017-03-03', 
+    price: 59.99 
+  },
+  { 
+    id: 4, 
+    name: 'Forza Horizon 5', 
+    platforms: ['Xbox'], 
+    releaseDate: '2021-11-09', 
+    price: 59.99 
+  },
+  { 
+    id: 5, 
+    name: 'Cyberpunk 2077', 
+    platforms: ['PlayStation', 'Xbox', 'PC'], 
+    releaseDate: '2020-12-10', 
+    price: 29.99 
+  },
+  { 
+    id: 6, 
+    name: 'Spider-Man 2', 
+    platforms: ['PlayStation', 'PC'], 
+    releaseDate: '2023-10-20', 
+    price: 69.99 
+  }
+];
+
 const genericPlatforms = ["All", "PlayStation", "Xbox", "Nintendo", "PC"];
 
 
 function App() {
-  const [games, setGames] = useState([]);
+  /* const [games, setGames] = useState([]);
 
-  useEffect(() => {
+ useEffect(() => {
     const fetchGames = async () => {
       try {
         const response = await fetch('http://localhost:5001/api/games');
@@ -31,7 +70,7 @@ function App() {
     };
 
     fetchGames();
-  }, []);
+  }, []);*/
 
   const [selectedPlatform, setSelectedPlatform] = useState('All');
 
@@ -55,12 +94,14 @@ function App() {
           <PlatformButton title = {genericPlatform} selected = {selectedPlatform === genericPlatform} onClick = {() =>handleFilter(genericPlatform)}/>
         ))}
       </nav>
-
-      <ul>
-        {filteredGames.map((game) => (
-          <li key={game.id}>{game.name}</li>
+      <div className='gameSection'>
+      {filteredGames.map((game) => (
+          <div>
+          <GameCard game = {game}/>
+          </div>
         ))}
-      </ul>
+      </div>
+        
       
     </div>
   );
