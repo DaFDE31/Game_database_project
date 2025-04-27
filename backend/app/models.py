@@ -72,7 +72,7 @@ class Achievements(db.Model):
 
     game = db.relationship("Game")
 
-
+'''
 class OnlineService(db.Model):
     __tablename__ = 'onlineservice'
     ServiceID = db.Column(db.Integer, primary_key=True)
@@ -83,7 +83,7 @@ class OnlineService(db.Model):
     YearlyPrice = db.Column(db.Float)
 
     company = db.relationship("Company")
-
+'''
 
 class UserAccount(db.Model):
     __tablename__ = 'useraccount'
@@ -91,19 +91,21 @@ class UserAccount(db.Model):
     Password = db.Column(db.String(255))
     FirstName = db.Column(db.String(255))
     LastName = db.Column(db.String(255))
+    Email = db.Column(db.String(255), unique = True)
     Region = db.Column(db.String(255))
-    OnlineServiceID = db.Column(db.Integer, db.ForeignKey('onlineservice.ServiceID'))
+    #OnlineServiceID = db.Column(db.Integer, db.ForeignKey('onlineservice.ServiceID'))
     DoB = db.Column(db.Date)
 
-    service = db.relationship("OnlineService")
+    #service = db.relationship("OnlineService")
 
 
 class Plays(db.Model):
     __tablename__ = 'plays'
     GameID = db.Column(db.Integer, db.ForeignKey('game.GameID'), primary_key=True)
     UserID = db.Column(db.String(255), db.ForeignKey('useraccount.UserName'), primary_key=True)
-    OnlineServiceID = db.Column(db.Integer, db.ForeignKey('onlineservice.ServiceID'))
-    Hours = db.Column(db.Float)
+    PlatID = db.Column(db.Integer, db.ForeignKey('platform.PlatID'), primary_key=True)
+    Hours = db.Column(db.Float ,default = 0.0)
+    #Maybe add a purchase date
 
 
 class DLC(db.Model):
@@ -122,3 +124,5 @@ class Downloaded(db.Model):
     __tablename__ = 'downloaded'
     DLCID = db.Column(db.Integer, db.ForeignKey('dlc.DLCID'), primary_key=True)
     UserName = db.Column(db.String(255), db.ForeignKey('useraccount.UserName'), primary_key=True)
+
+regions = ["USA", "Asia", "Europe", "Australia"]

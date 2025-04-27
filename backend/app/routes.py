@@ -1,12 +1,13 @@
 from flask import jsonify, request
 from flask_cors import cross_origin
+from werkzeug.security import generate_password_hash, check_password_hash
 from . import db
-from .models import Game, Platform, PlayedOn, GameStudio
+from .models import Game, Platform, PlayedOn, GameStudio, UserAccount
 from sqlalchemy.orm import joinedload
 
 def register_routes(app):
-    @app.route('/api/games')
-    @cross_origin(origin='http://localhost:3000')  # explicitly allow this origin
+    @app.route("/api/games")
+    @cross_origin(origin="http://localhost:3000")  # explicitly allow this origin
     def get_games():
         games = Game.query.options(joinedload(Game.studio)).all()
 
@@ -16,48 +17,48 @@ def register_routes(app):
             platform_names = [Platform.query.get(p.PlatID).Name for p in platforms]
 
             results.append({
-                'id': game.GameID,
-                'name': game.Name,
-                'price': game.Price,
-                'releaseDate': game.ReleaseDate.isoformat(),
-                'rating': game.Rating,
-                'studio': game.studio.Name if game.studio else 'Unknown',
-                'platforms': platform_names
+                "id": game.GameID,
+                "name": game.Name,
+                "price": game.Price,
+                "releaseDate": game.ReleaseDate.isoformat(),
+                "rating": game.Rating,
+                "studio": game.studio.Name if game.studio else "Unknown",
+                "platforms": platform_names
             })
         return jsonify(results)
-    @app.route('/api/platforms')
-    @cross_origin(origin='http://localhost:3000')
+    @app.route("/api/platforms")
+    @cross_origin(origin="http://localhost:3000")
     def get_platforms():
         platforms = Platform.query.all()
         return jsonify([
-            {'id': p.PlatID, 'name': p.Name}
+            {"id": p.PlatID, "name": p.Name}
             for p in platforms
         ])
     ### GET THE STUDIOS
-    @app.route('/api/studios')
-    @cross_origin(origin='http://localhost:3000')
+    @app.route("/api/studios")
+    @cross_origin(origin="http://localhost:3000")
     def get_studios():
         studios = GameStudio.query.all()
         return jsonify([
-            {'id': s.StudioID, 'name': s.Name}
+            {"id": s.StudioID, "name": s.Name}
             for s in studios
         ])
     
 
     ### ADD GAMES TO THE DATABASE
-    @app.route('/api/games', methods=['POST'])
-    @cross_origin(origin='http://localhost:3000')
+    @app.route("/api/games", methods=["POST"])
+    @cross_origin(origin="http://localhost:3000")
     def add_game():
         data = request.get_json()
 
-        name = data.get('name')
-        price = data.get('price')
-        release_date = data.get('releaseDate')
-        studio_name = data.get('studio')
-        platforms = data.get('platforms', [])
+        name = data.get("name")
+        price = data.get("price")
+        release_date = data.get("releaseDate")
+        studio_name = data.get("studio")
+        platforms = data.get("platforms", [])
 
         if not all([name, price, release_date, platforms]):
-            return jsonify({'error': 'Missing fields'}), 400
+            return jsonify({"error": "Missing fields"}), 400
         
         existing_game = Game.query.filter_by(Name = name).first()
         if existing_game:
@@ -90,4 +91,53 @@ def register_routes(app):
 
         db.session.commit()
 
-        return jsonify({'message': 'Game and Studio added successfully!', 'gameID': new_game.GameID, "gameName": new_game.Name}), 201
+        return jsonify({"message": "Game and Studio added!"}), 201
+    
+    ### CREATING AND LOGGING IN AS A USER
+    @app.route("/api/register", methods=["POST"])
+    def register_user():
+        data = request.get_json()
+        username = data.get("username")
+        password = data.get("password")
+        email = data.get("email")
+        first_name = data.get("firstName")
+        last_name = data.get("lastName")
+        region = data.get("region")
+        dob = data.get("dob")  #"YYYY-MM-DD"
+
+        if not all([username, password, email]):
+            return jsonify({"error": "Username, email, and password required"}), 400
+        if not all([first_name, last_name, dob]):
+            return jsonify({"error": "Missing fields"}), 400
+
+        if UserAccount.query.filter_by(UserName=username).first():
+            return jsonify({"error": "User already exists"}), 400
+
+        hash = generate_password_hash(password)
+
+        new_user = UserAccount(
+            UserName=username,
+            Password=hash,
+            Email = email,
+            FirstName=first_name,
+            LastName=last_name,
+            Region=region,
+            DoB=dob,
+        )
+        db.session.add(new_user)
+        db.session.commit()
+
+        return jsonify({"message": "User registered!"})
+
+    @app.route("/api/login", methods=["POST"])
+    def login_user():
+        data = request.get_json()
+        username = data.get("username")
+        password = data.get("password")
+
+        user = UserAccount.query.filter_by(UserName=username).first()
+
+        if not user or check_password_hash(user.Password, password) == False:
+            return jsonify({"error": "Username or Password are incorrect"}), 401
+
+        return jsonify({"message": "Login successful!"})

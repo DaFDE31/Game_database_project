@@ -3,13 +3,13 @@ import "./GameCard.css";
 import {Chip, Stack, Typography} from '@mui/material';
 
         
-const GameCard = ({game}) =>{
+const SavedCard = ({game}) =>{
     return(
         <div className="gameCard">
             <h2 className="gameTitle">{game.name}</h2>
-            <p>{game.price === 0 ? "Free" : `$${game.price}`}</p>
+            <p>Hours Played: </p>
             <Typography variant="body2" color="text.secondary">
-                Released: {game.releaseDate}
+                Purchased: {game.releaseDate}
             </Typography>
             <Stack direction="row" spacing={1} justifyContent="center" mt={1} flexWrap="wrap">
                 {game.platforms.map((platform, index) => (
@@ -20,4 +20,4 @@ const GameCard = ({game}) =>{
     )
 }
 
-export default GameCard
+export default SavedCard

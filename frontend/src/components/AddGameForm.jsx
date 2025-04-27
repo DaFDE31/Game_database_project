@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import "./AddGameForm.css";
+import "./DefaultForm.css";
 
-export default function AddGameForm({ onClose, onSubmit }) {
+function AddGameForm({ onClose, onSubmit }) {
   const [formData, setFormData] = useState({
     name: "",
     price: "",
@@ -60,10 +60,7 @@ export default function AddGameForm({ onClose, onSubmit }) {
   
       console.log('Game added successfully:', data);
   
-      const newGame = {
-        ...formData,
-        id: data.gameID 
-      };
+      const newGame = { ...formData, id: data.gameID};
   
       onSubmit(newGame);
       onClose();
@@ -137,3 +134,4 @@ export default function AddGameForm({ onClose, onSubmit }) {
     </div>
   );
 }
+export default AddGameForm
