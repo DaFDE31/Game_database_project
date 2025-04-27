@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import PlatformButton from './components/PlatformButton';
 import GameCard from './components/GameCard';
 import "./components/GameCard.css"
-
+import "./App.css"
+import AddGameForm from './components/AddGameForm';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 // Sample data
-const games = [
+/*const games = [
   { 
     id: 1, 
     name: 'God of War', 
@@ -36,24 +38,30 @@ const games = [
   { 
     id: 5, 
     name: 'Cyberpunk 2077', 
-    platforms: ['PlayStation', 'Xbox', 'PC'], 
+    platforms: ['PlayStation', 'Xbox', 'Steam/PC'], 
     releaseDate: '2020-12-10', 
     price: 29.99 
   },
   { 
     id: 6, 
     name: 'Spider-Man 2', 
-    platforms: ['PlayStation', 'PC'], 
+    platforms: ['PlayStation', 'Steam/PC'], 
     releaseDate: '2023-10-20', 
     price: 69.99 
   }
-];
+];*/
 
 const genericPlatforms = ["All", "PlayStation", "Xbox", "Nintendo", "PC"];
 
 
+
 function App() {
-  /* const [games, setGames] = useState([]);
+  const [showForm, setShowForm] = useState(false);
+
+  const handleAddGame = (newGame) => {
+    setGames(prevGames => [...prevGames, newGame])
+  };
+   const [games, setGames] = useState([]);
 
  useEffect(() => {
     const fetchGames = async () => {
@@ -70,7 +78,7 @@ function App() {
     };
 
     fetchGames();
-  }, []);*/
+  }, []);
 
   const [selectedPlatform, setSelectedPlatform] = useState('All');
 
@@ -91,15 +99,23 @@ function App() {
       <h1>Gaming Database</h1>
       <nav style={{ marginBottom: '20px' }}>
         {genericPlatforms.map((genericPlatform) =>(
-          <PlatformButton title = {genericPlatform} selected = {selectedPlatform === genericPlatform} onClick = {() =>handleFilter(genericPlatform)}/>
+          <PlatformButton key = {genericPlatform} title = {genericPlatform} selected = {selectedPlatform === genericPlatform} onClick = {() =>handleFilter(genericPlatform)}/>
         ))}
       </nav>
       <div className='gameSection'>
       {filteredGames.map((game) => (
-          <div>
-          <GameCard game = {game}/>
-          </div>
+            <GameCard key={game.id} game = {game}/>
         ))}
+        <div className="gameCard" onClick={() => setShowForm(true)}>
+        <AddCircleOutlineIcon sx={{ fontSize: 60 }} />
+      </div>
+
+      {showForm && (
+        <AddGameForm
+          onClose={() => setShowForm(false)}
+          onSubmit={handleAddGame}
+        />
+      )}
       </div>
         
       

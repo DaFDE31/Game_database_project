@@ -69,7 +69,7 @@ with app.app_context():
         ReleaseDate = "2003-09-12",
     )
 
-    platform_list = [ps5, xbox_series_x, switch, switch2, ps4, steam_player]
+    platform_list = [ps5,ps4, xbox_series_x, switch, switch2, steam_player]
 
     db.session.add_all(platform_list)
     db.session.commit()
