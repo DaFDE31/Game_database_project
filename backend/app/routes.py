@@ -113,7 +113,7 @@ def register_routes(app):
         if UserAccount.query.filter_by(UserName=username).first():
             return jsonify({"error": "User already exists"}), 400
 
-        hash = generate_password_hash(password)
+        hash = generate_password_hash(password, method="pbkdf2:sha256")
 
         new_user = UserAccount(
             UserName=username,
@@ -136,6 +136,10 @@ def register_routes(app):
         password = data.get("password")
 
         user = UserAccount.query.filter_by(UserName=username).first()
+
+        print(user.Password == password)
+
+        print(user.Password, password, check_password_hash(user.Password, password))
 
         if not user or check_password_hash(user.Password, password) == False:
             return jsonify({"error": "Username or Password are incorrect"}), 401

@@ -1,6 +1,8 @@
 from app import db, create_app
-from app.models import Company, Platform, GameStudio, Game, GameGenre, PlayedOn, Review, Achievements, OnlineService, UserAccount, Plays, DLC, Downloaded
+from app.models import Company, Platform, GameStudio, Game, GameGenre, PlayedOn, Review, Achievements, UserAccount, Plays, DLC, Downloaded, regions
 from datetime import date
+from werkzeug.security import generate_password_hash
+import random
 app = create_app()
 
 with app.app_context():
@@ -291,5 +293,12 @@ with app.app_context():
 
     db.session.add_all(played_on_records)
     db.session.commit()
-
+    lren = len(regions)
+    R = random.randrange(lren)
+    FakeUser = UserAccount(UserName = "Testuser", Password = generate_password_hash("Test123!", method="pbkdf2:sha256"), FirstName = "Test", LastName = "User", Email = "Tester123@fakemail.com", Region = regions[R], DoB = "2000-01-01")
+    R = random.randrange(lren)
+    FakeUser2 = UserAccount(UserName = "Fakeuser", Password = generate_password_hash("Test123!", method="pbkdf2:sha256"), FirstName = "User", LastName = "Test", Email = "User123@fakemail.com", Region = regions[R], DoB = "2000-12-31")
+    
+    db.session.add_all([FakeUser, FakeUser2])
+    db.session.commit()
     print("Database seeded successfully!")

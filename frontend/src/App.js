@@ -39,9 +39,9 @@ function App() {
           </div>
         )}
 
-          <Link to="/">Games</Link>
-          <Link to="/saved">Saved Games</Link>
-          <Link to="/account">Account</Link>
+          <Link to="/" className='link'>Games</Link>
+          <Link to="/saved" className='link'>Saved Games</Link>
+          <Link to="/account" className='link' >Account</Link>
         </nav>
 
         {showLogin && (

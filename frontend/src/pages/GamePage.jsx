@@ -58,6 +58,8 @@ const genericPlatforms = ["All", "PlayStation", "Xbox", "Nintendo", "PC"];
 function GamePage() {
   const [showForm, setShowForm] = useState(false);
 
+  const [search, setSearch] = useState("");
+
   const handleAddGame = (newGame) => {
     setGames(prevGames => [...prevGames, newGame])
   };
@@ -86,13 +88,15 @@ function GamePage() {
     setSelectedPlatform(platform);
   };
 
-  const filteredGames = selectedPlatform === 'All'
-  ? games
-  : games.filter((game) =>
+  const filteredGames = games.filter((game) => {
+    const platformfilter = selectedPlatform === 'All' ||
       game.platforms.some((platform) =>
         platform.includes(selectedPlatform)
       )
-    );
+
+      const searchfiler = search === "" || game.name.toLowerCase().includes(search.toLowerCase());
+      return platformfilter && searchfiler;
+  });
 
   return (
     <div className="gamePage">
@@ -101,7 +105,9 @@ function GamePage() {
         {genericPlatforms.map((genericPlatform) =>(
           <PlatformButton key = {genericPlatform} title = {genericPlatform} selected = {selectedPlatform === genericPlatform} onClick = {() =>handleFilter(genericPlatform)}/>
         ))}
+        
       </nav>
+      <input type="text" name="search" id="search" placeholder='SearchBar' value={search} onChange={(e) => setSearch(e.target.value)}/>
       <div className='gameSection'>
       {filteredGames.map((game) => (
             <GameCard key={game.id} game = {game}/>
