@@ -3,53 +3,9 @@ import PlatformButton from '../components/PlatformButton';
 import GameCard from "../components/GameCard"
 import "../components/GameCard.css"
 import "./GamePage.css"
+import SaveGameForm from '../components/SaveGameForm';
 import AddGameForm from '../components/AddGameForm';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-// Sample data
-/*const games = [
-  { 
-    id: 1, 
-    name: 'God of War', 
-    platforms: ['PlayStation', 'Steam/PC'], 
-    releaseDate: '2018-04-20', 
-    price: 39.99 
-  },
-  { 
-    id: 2, 
-    name: 'Halo Infinite', 
-    platforms: ['Xbox'], 
-    releaseDate: '2021-12-08', 
-    price: 59.99 
-  },
-  { 
-    id: 3, 
-    name: 'The Legend of Zelda: Breath of the Wild', 
-    platforms: ['Nintendo'], 
-    releaseDate: '2017-03-03', 
-    price: 59.99 
-  },
-  { 
-    id: 4, 
-    name: 'Forza Horizon 5', 
-    platforms: ['Xbox'], 
-    releaseDate: '2021-11-09', 
-    price: 59.99 
-  },
-  { 
-    id: 5, 
-    name: 'Cyberpunk 2077', 
-    platforms: ['PlayStation', 'Xbox', 'Steam/PC'], 
-    releaseDate: '2020-12-10', 
-    price: 29.99 
-  },
-  { 
-    id: 6, 
-    name: 'Spider-Man 2', 
-    platforms: ['PlayStation', 'Steam/PC'], 
-    releaseDate: '2023-10-20', 
-    price: 69.99 
-  }
-];*/
 
 const genericPlatforms = ["All", "PlayStation", "Xbox", "Nintendo", "PC"];
 
@@ -59,6 +15,9 @@ function GamePage() {
   const [showForm, setShowForm] = useState(false);
 
   const [search, setSearch] = useState("");
+  const [showSaveForm, setShowSaveForm] = useState(false);
+  const [selectedGame, setSelectedGame] = useState(null);
+
 
   const handleAddGame = (newGame) => {
     setGames(prevGames => [...prevGames, newGame])
@@ -110,7 +69,13 @@ function GamePage() {
       <input type="text" name="search" id="search" placeholder='SearchBar' value={search} onChange={(e) => setSearch(e.target.value)}/>
       <div className='gameSection'>
       {filteredGames.map((game) => (
-            <GameCard key={game.id} game = {game}/>
+            <GameCard key={game.id} game = {game} onClick={() => {
+                if (localStorage.getItem('userName')) {
+                  setSelectedGame(game);
+                  setShowSaveForm(true);
+                }
+              }}
+            />
         ))}
         <div className="gameCard" onClick={() => setShowForm(true)}>
             <AddCircleOutlineIcon sx={{ fontSize: 60 }} />
@@ -122,6 +87,36 @@ function GamePage() {
           onSubmit={handleAddGame}
         />
       )}
+
+      {showSaveForm && selectedGame && (
+        
+        <SaveGameForm 
+          game={selectedGame} 
+          onClose={() => setShowSaveForm(false)} 
+          onSubmit={async (playData) => {
+
+            const fullData = {
+              ...playData,
+              userName: localStorage.getItem('userName')
+            };
+
+            try {
+              const response = await fetch('http://localhost:5001/api/save_play', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(fullData)
+              });
+              if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.error}`);
+              }
+            } catch (error) {
+              console.error('Error saving play record:', error);
+            }
+          }}
+          
+        />
+      )}
+
       </div>
         
       

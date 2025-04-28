@@ -22,7 +22,6 @@ function LoginForm({ onClose , switchToRegister}) {
       }
 
       localStorage.setItem('userName', data.userName);
-      alert('Login successful!');
       onClose();
     } catch (err) {
       setError('Login failed. Please try again.');

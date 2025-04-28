@@ -40,8 +40,13 @@ function App() {
         )}
 
           <Link to="/" className='link'>Games</Link>
-          <Link to="/saved" className='link'>Saved Games</Link>
+          {isLoggedIn && (
+            <>
+            <Link to="/saved" className='link'>Saved Games</Link>
           <Link to="/account" className='link' >Account</Link>
+          </>
+          )}
+          
         </nav>
 
         {showLogin && (

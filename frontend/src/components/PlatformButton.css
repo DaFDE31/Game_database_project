@@ -64,3 +64,9 @@
     color: white;
     background-color: var(--pc);
   }
+
+  .selected {
+    border-color: var(--all);
+    color: white;
+    background-color: var(--all);
+  }

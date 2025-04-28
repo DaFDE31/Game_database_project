@@ -2,7 +2,8 @@ from flask import jsonify, request
 from flask_cors import cross_origin
 from werkzeug.security import generate_password_hash, check_password_hash
 from . import db
-from .models import Game, Platform, PlayedOn, GameStudio, UserAccount
+from datetime import datetime
+from .models import Game, Platform, PlayedOn, GameStudio, UserAccount,Plays
 from sqlalchemy.orm import joinedload
 
 def register_routes(app):
@@ -95,6 +96,7 @@ def register_routes(app):
     
     ### CREATING AND LOGGING IN AS A USER
     @app.route("/api/register", methods=["POST"])
+    @cross_origin(origin='http://localhost:3000')
     def register_user():
         data = request.get_json()
         username = data.get("username")
@@ -130,6 +132,7 @@ def register_routes(app):
         return jsonify({"message": "User registered!"})
 
     @app.route("/api/login", methods=["POST"])
+    @cross_origin(origin='http://localhost:3000')
     def login_user():
         data = request.get_json()
         username = data.get("username")
@@ -137,11 +140,74 @@ def register_routes(app):
 
         user = UserAccount.query.filter_by(UserName=username).first()
 
-        print(user.Password == password)
-
-        print(user.Password, password, check_password_hash(user.Password, password))
-
         if not user or check_password_hash(user.Password, password) == False:
             return jsonify({"error": "Username or Password are incorrect"}), 401
 
-        return jsonify({"message": "Login successful!"})
+        return jsonify({"message": "Login successful", "userName": user.UserName})
+    
+    ### SAVING A GAME
+    @app.route('/api/save_play', methods=['POST'])
+    @cross_origin(origin='http://localhost:3000')
+    def save_play():
+        data = request.get_json()
+
+        username = data.get('userName')  
+        game_id = data.get('gameId')
+        purchase_date = data.get('purchaseDate')
+        hours_played = data.get('hoursPlayed', 0)
+        platforms = data.get('platforms', [])
+
+        if not all([username,game_id,platforms]):
+            return jsonify({'error': 'Missing required fields'}), 400
+
+        try:
+            purchase_date = datetime.strptime(purchase_date, '%Y-%m-%d').date()
+        except ValueError:
+            return jsonify({'error': 'Invalid date format'}), 400
+
+        for platform in platforms:
+            p = Platform.query.filter_by(Name=platform).first()
+            if p:
+                new_play = Plays(
+                    UserID=username,
+                    GameID=game_id,
+                    PlatID=p.PlatID,
+                    PurchaseDate=purchase_date,
+                    Hours=hours_played
+                )
+                db.session.add(new_play)
+        db.session.commit()
+
+        return jsonify({'message': 'Game saved successfully'})
+
+    
+    @app.route('/api/saved_games', methods=['POST'])
+    @cross_origin(origin='http://localhost:3000')
+    def get_saved_games():
+        data = request.get_json()
+        username = data.get('userName')
+
+        if not username:
+            return jsonify({'error': 'Missing userName'}), 400
+        
+        plays = Plays.query.options(
+            joinedload(Plays.game),
+            joinedload(Plays.platform)
+        ).filter_by(UserID=username).all()
+
+        saved_games = {}
+
+        for play in plays:
+            game_id = play.GameID
+            if game_id not in saved_games:
+                saved_games[game_id] = {
+                    'name': play.game.Name if play.game else 'Unknown Game',
+                    'hours': play.Hours,
+                    'purchaseDate': play.PurchaseDate.isoformat() if play.PurchaseDate else '',
+                    'platforms': []
+                }
+            # Add platform name
+            if play.platform:
+                saved_games[game_id]['platforms'].append(play.platform.Name)
+
+        return jsonify(list(saved_games.values()))

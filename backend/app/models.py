@@ -44,11 +44,16 @@ class GameGenre(db.Model):
     GenreName = db.Column(db.String(255), primary_key=True)
     GameID = db.Column(db.Integer, db.ForeignKey('game.GameID'), primary_key=True)
 
+    game = db.relationship('Game')
+
 
 class PlayedOn(db.Model):
     __tablename__ = 'playedon'
     PlatID = db.Column(db.Integer, db.ForeignKey('platform.PlatID'), primary_key=True)
     GameID = db.Column(db.Integer, db.ForeignKey('game.GameID'), primary_key=True)
+
+    game = db.relationship('Game')
+    platform = db.relationship('Platform')
 
 
 class Review(db.Model):
@@ -105,7 +110,10 @@ class Plays(db.Model):
     UserID = db.Column(db.String(255), db.ForeignKey('useraccount.UserName'), primary_key=True)
     PlatID = db.Column(db.Integer, db.ForeignKey('platform.PlatID'), primary_key=True)
     Hours = db.Column(db.Float ,default = 0.0)
-    #Maybe add a purchase date
+    PurchaseDate = db.Column(db.Date, nullable=True)
+
+    game = db.relationship('Game')
+    platform = db.relationship('Platform')
 
 
 class DLC(db.Model):
@@ -125,4 +133,6 @@ class Downloaded(db.Model):
     DLCID = db.Column(db.Integer, db.ForeignKey('dlc.DLCID'), primary_key=True)
     UserName = db.Column(db.String(255), db.ForeignKey('useraccount.UserName'), primary_key=True)
 
+    dlc = db.relationship('DLC')
+    user = db.relationship('UserAccount')
 regions = ["USA", "Asia", "Europe", "Australia"]
