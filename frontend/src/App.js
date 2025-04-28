@@ -1,4 +1,5 @@
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import {BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import GamePage from './pages/GamePage';
 import SavedGamesPage from './pages/SavedGamesPage';
 import AccountPage from './pages/AccountPage';
@@ -9,7 +10,6 @@ import "./App.css"
 
 
 function App() {
-
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
   const isLoggedIn = !!localStorage.getItem('userName');
@@ -20,35 +20,34 @@ function App() {
   };
   const handleLogout = () => {
     localStorage.removeItem('userName');
-    window.location.reload();
+    window.location.href = '/';
   };
 
   return (
     <Router>
       <div className="App">
-        <nav>
-
-        {isLoggedIn ? (
-          <div>
-            <button onClick={handleLogout}>Logout</button>
+        <nav className="navbar">
+          <div className="nav-links">
+            <Link to="/" className="link">Games</Link>
+            {isLoggedIn && (
+              <>
+                <Link to="/saved" className="link">Saved Games</Link>
+                <Link to="/account" className="link">Account</Link>
+              </>
+            )}
           </div>
-        ) : (
-          <div>
-            <button onClick={() => setShowLogin(true)}>Login</button>
-            <button onClick={() => setShowRegister(true)}>Register</button> {/*Change this so login form has a register button that swithes to that form*/ }
-          </div>
-        )}
 
-          <Link to="/" className='link'>Games</Link>
-          {isLoggedIn && (
-            <>
-            <Link to="/saved" className='link'>Saved Games</Link>
-          <Link to="/account" className='link' >Account</Link>
-          </>
-          )}
-          
+          <div className="auth-buttons">
+            {isLoggedIn ? (
+              <button className="link" onClick={handleLogout}>Logout</button>
+            ) : (
+              <>
+                <button className="link" onClick={() => setShowLogin(true)}>Login</button>
+                <button className="link" onClick={() => setShowRegister(true)}>Register</button>
+              </>
+            )}
+          </div>
         </nav>
-
         {showLogin && (
         <LoginForm onClose={() => setShowLogin(false)} switchToRegister = {switchToRegister}/>
       )}

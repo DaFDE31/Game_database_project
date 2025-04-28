@@ -20,50 +20,46 @@
     background-color: var(--all);
   }
   
-  /* Optional platform-specific colors */
-  .platform-button.playstation {
+  .platform-button[class*="playstation"] {
     border-color: var(--playstation);
     color: var(--playstation);
   }
   
-  .platform-button.playstation.selected {
-    border-color: var(--playstation);
-    color: white;
+  .platform-button[class*="playstation"].selected {
     background-color: var(--playstation);
+    color: white;
   }
-
-  .platform-button.xbox {
+  
+  .platform-button[class*="xbox"] {
     border-color: var(--xbox);
     color: var(--xbox);
   }
   
-  .platform-button.xbox.selected {
-    border-color: var(--xbox);
-    color: white;
+  .platform-button[class*="xbox"].selected {
     background-color: var(--xbox);
+    color: white;
   }
-
-  .platform-button.nintendo {
+  
+  .platform-button[class*="nintendo"] {
     border-color: var(--nintendo);
     color: var(--nintendo);
   }
   
-  .platform-button.nintendo.selected {
-    border-color: var(--nintendo);
-    color: white;
+  .platform-button[class*="nintendo"].selected {
     background-color: var(--nintendo);
+    color: white;
   }
-
-  .platform-button.pc {
+  
+  .platform-button[class*="pc"] {
     border-color: var(--pc);
     color: var(--pc);
   }
   
-  .platform-button.pc.selected {
-    border-color: var(--pc);
-    color: white;
+  .platform-button[class*="pc"].selected {
     background-color: var(--pc);
+    color: white;
   }
+  
 
   .selected {
     border-color: var(--all);

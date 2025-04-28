@@ -63,7 +63,7 @@ function SaveGameForm({ game, onClose, onSubmit }) {
 
           <div className="formActions">
             <button type="button" onClick={onClose}>Cancel</button>
-            <button type="submit">Save</button>
+            <button type="submit" disabled={selectedPlatforms.length === 0}>Save</button>
           </div>
         </form>
       </div>

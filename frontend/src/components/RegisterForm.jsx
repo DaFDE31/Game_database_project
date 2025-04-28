@@ -33,8 +33,10 @@ function RegisterForm({ onClose }) {
         return;
       }
 
-      alert('Registration successful! You can now log in.');
+      localStorage.setItem('userName', data.userName || formData.username); 
       onClose();
+      window.location.reload();
+
     } catch (err) {
       setError('Registration failed. Please try again.');
     }

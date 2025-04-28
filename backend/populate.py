@@ -63,7 +63,7 @@ with app.app_context():
     )
 
     steam_player = Platform(
-        Name = "Steam/PC",
+        Name = "PC",
         Generation = 9,
         Price = 0,
         Sales = 0,

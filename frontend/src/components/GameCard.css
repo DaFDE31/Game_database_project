@@ -27,4 +27,22 @@
     margin: 5px 0;
     font-size: 0.95rem;
   }
-  
+  .closebutton {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: rgb(225, 225, 225);
+    border: none;
+    font: 1.2rem;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  }
+
+  .closebutton:hover {
+ 
+    background: rgb(141, 141, 141);
+
+
+  }

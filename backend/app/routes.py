@@ -168,6 +168,15 @@ def register_routes(app):
         for platform in platforms:
             p = Platform.query.filter_by(Name=platform).first()
             if p:
+
+                existing_play = Plays.query.filter_by(
+                    GameID=data['gameId'],
+                    UserID=data['userName'],
+                    PlatID=p.PlatID
+                ).first()
+
+                if existing_play:
+                    continue
                 new_play = Plays(
                     UserID=username,
                     GameID=game_id,
@@ -201,13 +210,50 @@ def register_routes(app):
             game_id = play.GameID
             if game_id not in saved_games:
                 saved_games[game_id] = {
+                    "id" : play.GameID,
                     'name': play.game.Name if play.game else 'Unknown Game',
                     'hours': play.Hours,
                     'purchaseDate': play.PurchaseDate.isoformat() if play.PurchaseDate else '',
                     'platforms': []
                 }
-            # Add platform name
             if play.platform:
                 saved_games[game_id]['platforms'].append(play.platform.Name)
 
         return jsonify(list(saved_games.values()))
+    
+    @app.route('/api/delete_saved_game', methods=['POST'])
+    @cross_origin(origin='http://localhost:3000') 
+    def delete_saved_game():
+        data = request.get_json()
+        user_name = data.get('userName')
+        game_id = data.get('gameId')
+        if not user_name or not game_id:
+            return jsonify({'error': 'Missing user or game information'}), 400
+
+        Plays.query.filter_by(UserID=user_name, GameID=game_id).delete()
+        db.session.commit()
+
+        return jsonify({'message': 'Deleted successfully'}), 200
+
+    @app.route('/api/user_info', methods=['POST'])
+    @cross_origin(origin='http://localhost:3000')
+    def user_info():
+        data = request.get_json()
+        user_name = data.get('userName')
+
+        if not user_name:
+            return jsonify({'error': 'Missing username'}), 400
+
+        user = UserAccount.query.filter_by(UserName=user_name).first()
+
+        if not user:
+            return jsonify({'error': 'User not found'}), 404
+
+        return jsonify({
+            'userName': user.UserName,
+            'firstName': user.FirstName,
+            'lastName': user.LastName,
+            'region': user.Region if user.Region else "N/A",
+            'dob': user.DoB.isoformat() if user.DoB else None
+        })
+

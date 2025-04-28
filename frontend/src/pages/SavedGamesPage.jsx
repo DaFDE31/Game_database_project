@@ -32,6 +32,24 @@ function SavedGamesPage() {
   
     fetchSavedGames();
   }, []);
+
+  const handleDelete = async (gameInfo) => {
+    try {
+      console.log(gameInfo)
+      await fetch('http://localhost:5001/api/delete_saved_game', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userName: localStorage.getItem('userName'),
+          gameId: gameInfo.id,
+        }),
+      });
+
+      setGames(prevGames => prevGames.filter(g => g.id !== gameInfo.id));
+    } catch (error) {
+      console.error('Failed to delete game:', error);
+    }
+  };
   
 
   const [selectedPlatform, setSelectedPlatform] = useState('All');
@@ -62,7 +80,7 @@ function SavedGamesPage() {
       <input type="text" name="search" id="search" placeholder='SearchBar' value={search} onChange={(e) => setSearch(e.target.value)}/>
       <div className='gameSection'>
       {filteredGames.map((gameInfo) => (
-        <SavedCard key={gameInfo.name} gameInfo={gameInfo} />
+        <SavedCard key={gameInfo.name} gameInfo={gameInfo} onDelete={handleDelete}/>
         ))}
       </div>
     </div>

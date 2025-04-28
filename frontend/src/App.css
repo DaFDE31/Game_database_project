@@ -41,3 +41,38 @@ nav .link:hover {
     grid-template-columns: 1fr;
   }
 }
+
+.navbar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.nav-links {
+  display: flex;
+  gap: 20px;
+}
+
+.auth-buttons {
+  position: absolute;
+  right: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+.link, .auth-button {
+  padding: 8px 15px;
+  border: none;
+  background-color: #006FCD;
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.link:hover, .auth-button:hover {
+  background-color: #004a9f;
+}
