@@ -77,9 +77,12 @@ function GamePage() {
               }}
             />
         ))}
-        <div className="gameCard" onClick={() => setShowForm(true)}>
+        {localStorage.getItem('userName') && (
+          <div className="gameCard" onClick={() => {setShowForm(true)}}>
             <AddCircleOutlineIcon sx={{ fontSize: 60 }} />
-        </div>
+          </div>
+        )}
+        
 
       {showForm && (
         <AddGameForm
